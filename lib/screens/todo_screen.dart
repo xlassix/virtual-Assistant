@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todolist/screens/loginScreen.dart';
 import 'package:todolist/util/todo.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
@@ -14,16 +13,19 @@ class TodoScreen extends StatefulWidget {
   _TodoScreenState createState() => _TodoScreenState();
 }
 
+enum TodoType { once, recurring }
+
 class _TodoScreenState extends State<TodoScreen> {
   List todos;
   String input = "";
   String uuid;
+  DateTime _todoDateValue;
   bool _loading;
   final format = DateFormat("dd-MM-yyyy HH:mm");
-
   final _auth = FirebaseAuth.instance;
   User loggedInUser;
   SharedPreferences prefs;
+  TodoType value = TodoType.once;
 
   void getUser() async {
     prefs = await SharedPreferences.getInstance();
@@ -110,6 +112,11 @@ class _TodoScreenState extends State<TodoScreen> {
                             input = value;
                           },
                         ),
+                        Row(
+                          children:
+                              //TODO: implement Radio Button
+                              [],
+                        ),
                         DateTimeField(
                           decoration: const InputDecoration(
                             icon: Icon(Icons.calendar_today),
@@ -134,6 +141,11 @@ class _TodoScreenState extends State<TodoScreen> {
                               return currentValue;
                             }
                           },
+                          onChanged: (DateTime value) {
+                            setState(() {
+                              _todoDateValue = value;
+                            });
+                          },
                         ),
                       ],
                     ),
@@ -141,6 +153,7 @@ class _TodoScreenState extends State<TodoScreen> {
                   actions: <Widget>[
                     FlatButton(
                         onPressed: () {
+                          //TODO : add time to CreateTodo method
                           _todo.createTodos(input);
                           setState(() {});
                           Navigator.of(context).pop();

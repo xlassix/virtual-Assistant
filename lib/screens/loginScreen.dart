@@ -17,6 +17,7 @@ const colorizeTextStyle = TextStyle(
   fontSize: 30.0,
   fontFamily: 'Horizon',
 );
+
 class LoginScreen extends StatefulWidget {
   static const String id = "loginScreen";
   @override
@@ -170,7 +171,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               _auth.currentUser.uid,
                               _auth.currentUser.displayName
                             ]);
-                            Navigator.pushNamedAndRemoveUntil(context, TodoScreen.id ,(route) => false);
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, TodoScreen.id, (route) => false);
                           }
                         } catch (e) {
                           print(e.toString());
@@ -198,8 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           "Create One",
                           style: TextStyle(color: Colors.purple),
-                        )
-                      )
+                        ))
                   ],
                 )
               ],
