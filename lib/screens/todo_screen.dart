@@ -100,42 +100,50 @@ class _TodoScreenState extends State<TodoScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   title: Text("Add Todolist"),
-                  content: Column(
-                    children: [
-                      TextField(
-                        onChanged: (String value) {
-                          input = value;
-                        },
-                      ),
-                      Text('Basic date & time field (${format.pattern})'),
-                      DateTimeField(
-                        format: format,
-                        onShowPicker: (context, currentValue) async {
-                          final date = await showDatePicker(
-                              context: context,
-                              firstDate: DateTime(1900),
-                              initialDate: currentValue ?? DateTime.now(),
-                              lastDate: DateTime(2100));
-                          if (date != null) {
-                            final time = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay.fromDateTime(
-                                  currentValue ?? DateTime.now()),
-                            );
-                            return DateTimeField.combine(date, time);
-                          } else {
-                            return currentValue;
-                          }
-                        },
-                      ),
-                    ],
+                  content: SizedBox(
+                    height: 150,
+                    child: Column(
+                      children: [
+                        TextField(
+                          maxLength: 200,
+                          onChanged: (String value) {
+                            input = value;
+                          },
+                        ),
+                        DateTimeField(
+                          decoration: const InputDecoration(
+                            icon: Icon(Icons.calendar_today),
+                            hintText: 'Due Date *',
+                            labelText: 'Due Date',
+                          ),
+                          format: format,
+                          onShowPicker: (context, currentValue) async {
+                            final date = await showDatePicker(
+                                context: context,
+                                firstDate: DateTime(1900),
+                                initialDate: currentValue ?? DateTime.now(),
+                                lastDate: DateTime(2100));
+                            if (date != null) {
+                              final time = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.fromDateTime(
+                                    currentValue ?? DateTime.now()),
+                              );
+                              return DateTimeField.combine(date, time);
+                            } else {
+                              return currentValue;
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   actions: <Widget>[
                     FlatButton(
                         onPressed: () {
                           _todo.createTodos(input);
-                          Navigator.of(context).pop();
                           setState(() {});
+                          Navigator.of(context).pop();
                         },
                         child: Text("Add"))
                   ],
