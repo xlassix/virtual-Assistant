@@ -15,6 +15,35 @@ class TodoScreen extends StatefulWidget {
 
 enum TodoType { once, recurring }
 
+String readTimestamp(int timestamp) {
+  var now = DateTime.now();
+  var format = DateFormat('HH:mm a');
+  var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+  var diff = now.difference(date);
+  var time = '';
+
+  if (diff.inSeconds <= 0 ||
+      diff.inSeconds > 0 && diff.inMinutes == 0 ||
+      diff.inMinutes > 0 && diff.inHours == 0 ||
+      diff.inHours > 0 && diff.inDays == 0) {
+    time = format.format(date);
+  } else if (diff.inDays > 0 && diff.inDays < 7) {
+    if (diff.inDays == 1) {
+      time = diff.inDays.toString() + ' DAY AGO';
+    } else {
+      time = diff.inDays.toString() + ' DAYS AGO';
+    }
+  } else {
+    if (diff.inDays == 7) {
+      time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
+    } else {
+      time = (diff.inDays / 7).floor().toString() + ' WEEKS AGO';
+    }
+  }
+
+  return time;
+}
+
 class _TodoScreenState extends State<TodoScreen> {
   List todos;
   String input = "";
@@ -67,10 +96,10 @@ class _TodoScreenState extends State<TodoScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(),
+                Row(key: Key("empty row")),
                 CircularProgressIndicator(
-                  backgroundColor: Colors.purpleAccent,
-                )
+                    backgroundColor: Colors.purpleAccent,
+                    key: Key("empty progress")),
               ]),
         ),
       );
@@ -127,7 +156,7 @@ class _TodoScreenState extends State<TodoScreen> {
                           onShowPicker: (context, currentValue) async {
                             final date = await showDatePicker(
                                 context: context,
-                                firstDate: DateTime(1900),
+                                firstDate: DateTime.now(),
                                 initialDate: currentValue ?? DateTime.now(),
                                 lastDate: DateTime(2100));
                             if (date != null) {
@@ -154,7 +183,8 @@ class _TodoScreenState extends State<TodoScreen> {
                     FlatButton(
                         onPressed: () {
                           //TODO : add time to CreateTodo method
-                          _todo.createTodos(input);
+                          //print(_todoDateValue);
+                          _todo.createTodos(input, _todoDateValue);
                           setState(() {});
                           Navigator.of(context).pop();
                         },
@@ -180,10 +210,13 @@ class _TodoScreenState extends State<TodoScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(),
-                  CircularProgressIndicator(),
+                  Row(key: Key("empty row")),
+                  CircularProgressIndicator(key: Key("empty progress")),
                 ],
               ));
+            }
+            for (var item in snapshots.data.docs) {
+              print(item);
             }
 
             return ListView.builder(
@@ -192,6 +225,8 @@ class _TodoScreenState extends State<TodoScreen> {
                 itemBuilder: (context, index) {
                   DocumentSnapshot documentSnapshot =
                       snapshots.data.docs[index];
+
+                  DateTime temp = (documentSnapshot["time"].toDate());
                   return Card(
                     key: Key(documentSnapshot.id),
                     elevation: 4,
@@ -199,7 +234,10 @@ class _TodoScreenState extends State<TodoScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                     child: ListTile(
+                      key: Key("tile: " + documentSnapshot.id),
                       title: Text(documentSnapshot["todoTitle"]),
+                      subtitle:
+                          Text(DateFormat.yMMMMEEEEd().add_jm().format(temp)),
                       trailing: IconButton(
                         icon: Icon(Icons.delete, color: Colors.red),
                         onPressed: () {
