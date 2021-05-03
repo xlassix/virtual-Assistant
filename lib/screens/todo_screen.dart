@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todolist/screens/loginScreen.dart';
+import 'package:todolist/util/database.dart';
 import 'package:todolist/util/todo.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class TodoScreen extends StatefulWidget {
   static const String id = "TodoScreen";
@@ -185,6 +187,8 @@ class _TodoScreenState extends State<TodoScreen> {
                           //TODO : add time to CreateTodo method
                           //print(_todoDateValue);
                           _todo.createTodos(input, _todoDateValue);
+                          //create a notification document
+                          Database().createNotification(Timestamp.fromDate(_todoDateValue));
                           setState(() {});
                           Navigator.of(context).pop();
                         },
