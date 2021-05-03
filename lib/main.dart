@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+<<<<<<< HEAD
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+=======
+>>>>>>> 7abf2bc (krames Notifications)
 import 'package:todolist/screens/landing.dart';
 import 'package:todolist/screens/loginScreen.dart';
 import 'package:todolist/screens/registrationScreen.dart';
 import 'package:todolist/screens/todo_screen.dart';
+<<<<<<< HEAD
+=======
+import 'package:firebase_messaging/firebase_messaging.dart';
+>>>>>>> 7abf2bc (krames Notifications)
 
 // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 //     FlutterLocalNotificationsPlugin();
