@@ -4,7 +4,6 @@ import 'package:todolist/screens/landing.dart';
 import 'package:todolist/screens/loginScreen.dart';
 import 'package:todolist/screens/registrationScreen.dart';
 import 'package:todolist/screens/todo_screen.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:todolist/util/notification.dart';
 
 // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -12,6 +11,7 @@ import 'package:todolist/util/notification.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().init();
   await Firebase.initializeApp();
   // const AndroidInitializationSettings initializationSettingsAndroid =
   //     AndroidInitializationSettings('app_icon');
