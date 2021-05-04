@@ -1,30 +1,35 @@
 const functions = require("firebase-functions");
 const admin = require('firebase-admin');
-admin.initializeApp();
+
+
+var serviceAccount = require("./mytodolist-dfbc3-firebase-adminsdk-h6yhf-5306ea4234.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://mytodolist-dfbc3-default-rtdb.firebaseio.com"
+});
 const database = admin.firestore();
 
-// exports.timerUpdate = functions.pubsub.schedule('* * * * *').onRun((context) => {
-//     database.doc("MyTodolist/05Qq9K7OVRETjrqK2eUH").update({"time":admin.firestore.Timestamp.now()})
-//     return console.log('Successful time update');
-//   });
-
-  exports.sendNotification = functions.pubsub.schedule('* * * * *').onRun(async(context) => {
+  exports.sendNotifications = functions.pubsub.schedule('* * * * *').onRun(async(context) => {
     //check whether notification should be sent
     //send if yes
-    const query = await database.collection("notifications").where(
-      "whenToNotify", '<=', admin.firestore.TimeStamp.now()).where(
-      "notificationSent", '==', false).get();
+    functions.logger.info("Start ....");
+    const query = await database.collection("notifications")
+    .where("whenToNotify", '<=', admin.firestore.TimeStamp.now())
+    .where("notificationSent", '==', false).get();
+
+    functions.logger.info(query)
 
     query.forEach(async snapshot => {
-      sendNotification(snapshot.data().token);
-      await database.doc('notifications'.snapshot.data().token).update({
+      sendNotifications(snapshot.data().token);
+      await database.doc('notifications/' + snapshot.data().token).update({
         "notificationSent": true,
       });
     });
 
-    function sendNotification(androidNotificationToken){
+    function sendNotifications(androidNotificationToken){
       let title = "Virtual Assistant";
-      let body = "COmplete your tasks";
+      let body = "Complete your tasks";
 
       const message = {
         notification : {title: title, body: body},
@@ -32,7 +37,7 @@ const database = admin.firestore();
         data: {click_action: 'FLUTTER_NOTIFICATION_CLICK'}
       };
 
-      admin.message().send(message).then(response =>{
+      admin.messaging().send(message).then(response =>{
         return console.log("Successfully sent Message");
       }).catch(error =>{
         return console.log("Error sending Message");

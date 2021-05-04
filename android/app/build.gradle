@@ -39,11 +39,8 @@ android {
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-<<<<<<< HEAD
-=======
         multiDexEnabled true
         
->>>>>>> 7abf2bc (krames Notifications)
     }
 
     buildTypes {
