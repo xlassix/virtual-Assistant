@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:todolist/screens/todo_screen.dart';
+import 'package:todolist/main.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class Notification extends StatefulWidget {
   Notification({Key key}) : super(key: key);
@@ -15,22 +17,29 @@ class NotificationState extends State<Notification> {
   void initState() {
     super.initState();
 
-    // _fcm.configure(
-    //   onMessage: (Map<String, dynamic> message) async {
-    //     //this callback happens when you are in the app and notification is received
-    //     print("onMessage: $message");
-    //   },
-    //   onLaunch: (Map<String, dynamic> message) async {
-    //     //this callback happens when you launch app after a notification received
-    //     print("onLaunch: $message");
-    //   },
-    //   onResume: (Map<String, dynamic> message) async {
-    //     //this callbakc happens when you open the app after a notification received AND
-    //     //app was running in the background
-    //     print("onResume: $message");
-    //   },
-    // );
-    //
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
+
+    Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    // If you're going to use other Firebase services in the background, such as Firestore,
+    // make sure you call `initializeApp` before using other Firebase services.
+    await Firebase.initializeApp();
+
+    print("Handling a background message: ${message.messageId}");
+    }
+
+    void main() {
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    runApp(MyApp());
+    }
+    
   }
 
   @override

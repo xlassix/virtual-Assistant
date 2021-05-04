@@ -5,6 +5,7 @@ import 'package:todolist/screens/loginScreen.dart';
 import 'package:todolist/screens/registrationScreen.dart';
 import 'package:todolist/screens/todo_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:todolist/util/notification.dart';
 
 // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 //     FlutterLocalNotificationsPlugin();
